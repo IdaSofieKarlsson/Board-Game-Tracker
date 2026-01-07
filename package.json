@@ -1,0 +1,14 @@
+{
+  "name": "board-game-tracker",
+  "private": true,
+  "scripts": {
+    "client:install": "npm --prefix client install",
+    "server:install": "npm --prefix server install",
+    "client:lint": "npm --prefix client run lint",
+    "server:lint": "npm --prefix server run lint",
+    "client:test": "npm --prefix client run test --if-present",
+    "server:test": "npm --prefix server run test",
+    "client:build": "npm --prefix client run build",
+    "server:build": "npm --prefix server run build"
+  }
+}
