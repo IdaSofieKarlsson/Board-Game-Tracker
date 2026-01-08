@@ -13,12 +13,6 @@ export async function getGames(): Promise<Game[]> {
   return apiFetch("/api/games");
 }
 
-export async function createGame(payload: { name: string; category: Game["category"] }): Promise<Game> {
-  // apiFetch throws on non-2xx, so we handle 409 here manually using fetch
-  // (minimal special-case for your “Do you mean this game?” flow)
-  throw new Error("Use createGameWithDuplicateHandling instead");
-}
-
 // Special: returns either { created } or { duplicate }
 export async function createGameWithDuplicateHandling(payload: { name: string; category: Game["category"] })
   : Promise<{ kind: "created"; game: Game } | { kind: "duplicate"; game: DuplicateGame }> {

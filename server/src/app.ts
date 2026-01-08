@@ -10,7 +10,17 @@ import { errorHandler } from "./middleware/errorHandler";
 export function createApp() {
   const app = express();
 
-  app.use(cors());
+  const allowedOrigins = [
+      "http://localhost:5173",
+      process.env.CLIENT_ORIGIN // set this in Vercel for server
+    ].filter(Boolean) as string[];
+
+  app.use(
+    cors({
+      origin: allowedOrigins,
+      credentials: false
+    })
+  );
   app.use(express.json());
 
   app.get("/health", (_req, res) => res.json({ ok: true }));
