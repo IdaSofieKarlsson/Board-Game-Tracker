@@ -4,6 +4,7 @@ import { AuthProvider } from "./auth/AuthContext";
 import Login from "./pages/Login";
 import Overview from "./pages/Overview";
 import { ProtectedRoute } from "./components/ProtectedRoute";
+import Games from "./pages/Games";
 
 export default function App() {
   return (
@@ -16,6 +17,14 @@ export default function App() {
             element={
               <ProtectedRoute>
                 <Overview />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/games"
+            element={
+              <ProtectedRoute>
+                <Games />
               </ProtectedRoute>
             }
           />

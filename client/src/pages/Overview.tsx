@@ -4,6 +4,8 @@ import { getOverviewStats, type OverviewStats } from "../api/stats";
 import { signOut } from "firebase/auth";
 import { auth } from "../firebase";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { getGames, type Game } from "../api/games";
 
 
 export default function Overview() {
@@ -16,6 +18,7 @@ export default function Overview() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [games, setGames] = useState<Game[]>([]);
 
   const navigate = useNavigate();
 
@@ -29,9 +32,10 @@ export default function Overview() {
     setError(null);
     setLoading(true);
     try {
-      const [meData, statsData] = await Promise.all([getMe(), getOverviewStats()]);
+      const [meData, statsData, gamesData] = await Promise.all([getMe(), getOverviewStats(), getGames()]);
       setMe(meData);
       setStats(statsData);
+      setGames(gamesData);
 
       setUsername(meData.username ?? "");
       setFunFact(meData.funFact ?? "");
@@ -69,10 +73,18 @@ export default function Overview() {
 
   const displayName = me.username?.trim() ? me.username : me.email;
 
+  const favoriteGameName =
+    stats.favoriteGameId
+      ? games.find((g) => g._id === stats.favoriteGameId)?.name ?? "Unknown"
+      : "None yet";
+
   return (
     <div style={{ padding: 16 }}>
       <h1>Overview</h1>
       <button onClick={logout}>Logout</button>
+      <p>
+        <Link to="/overview">Overview</Link> | <Link to="/games">Games</Link>
+      </p>
       <section style={{ marginBottom: 16 }}>
         <h2>User</h2>
         <p>
@@ -108,10 +120,7 @@ export default function Overview() {
       <section>
         <h2>Stats</h2>
         <p>Total points: <strong>{stats.totalPoints}</strong></p>
-        <p>
-          Favorite game id:{" "}
-          <strong>{stats.favoriteGameId ?? "None yet"}</strong>
-        </p>
+        <p>Favorite game: <strong>{favoriteGameName}</strong></p>
       </section>
     </div>
   );

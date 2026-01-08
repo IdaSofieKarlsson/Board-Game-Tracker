@@ -32,6 +32,9 @@ sessionsRouter.post("/", requireAuth, async (req, res) => {
 
   const points = pointsFromResult(result);
   const playedAtDate = playedAt ? new Date(playedAt) : new Date();
+  if (playedAtDate.getTime() > Date.now()) {
+    return res.status(400).json({ message: "playedAt cannot be in the future" });
+  }
 
   const created = await SessionModel.create({
     userId: (user as any)._id,
