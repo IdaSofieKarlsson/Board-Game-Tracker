@@ -121,9 +121,6 @@ export default function Games() {
   return (
     <div style={{ padding: 16 }}>
       <h1>Games</h1>
-        <p>
-        <Link to="/overview">Overview</Link> | <Link to="/games">Games</Link>
-        </p>
       {error && <p>{error}</p>}
 
       <button onClick={() => setAddOpen(true)}>Add Game</button>

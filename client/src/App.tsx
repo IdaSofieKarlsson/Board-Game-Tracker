@@ -5,6 +5,7 @@ import Login from "./pages/Login";
 import Overview from "./pages/Overview";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import Games from "./pages/Games";
+import { Header } from "./components/Header";
 
 export default function App() {
   return (
@@ -16,6 +17,7 @@ export default function App() {
             path="/overview"
             element={
               <ProtectedRoute>
+                <Header />
                 <Overview />
               </ProtectedRoute>
             }
@@ -24,6 +26,7 @@ export default function App() {
             path="/games"
             element={
               <ProtectedRoute>
+                <Header />
                 <Games />
               </ProtectedRoute>
             }

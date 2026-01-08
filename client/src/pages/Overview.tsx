@@ -81,10 +81,6 @@ export default function Overview() {
   return (
     <div style={{ padding: 16 }}>
       <h1>Overview</h1>
-      <button onClick={logout}>Logout</button>
-      <p>
-        <Link to="/overview">Overview</Link> | <Link to="/games">Games</Link>
-      </p>
       <section style={{ marginBottom: 16 }}>
         <h2>User</h2>
         <p>
