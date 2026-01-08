@@ -1,22 +1,18 @@
 import admin from "firebase-admin";
+import fs from "node:fs";
 
-function loadServiceAccountFromEnv() {
-  const raw = process.env.FIREBASE_SERVICE_ACCOUNT_JSON;
-  if (!raw) throw new Error("FIREBASE_SERVICE_ACCOUNT_JSON is missing");
+function loadServiceAccount() {
+  const p = process.env.FIREBASE_SERVICE_ACCOUNT_PATH;
+  if (!p) throw new Error("FIREBASE_SERVICE_ACCOUNT_PATH is missing");
 
-  try {
-    return JSON.parse(raw);
-  } catch {
-    // Common case: JSON pasted with escaped newlines in private_key
-    const fixed = raw.replace(/\\n/g, "\n");
-    return JSON.parse(fixed);
-  }
+  const raw = fs.readFileSync(p, "utf-8");
+  return JSON.parse(raw);
 }
 
 export function getFirebaseAdmin() {
   if (admin.apps.length > 0) return admin;
 
-  const serviceAccount = loadServiceAccountFromEnv();
+  const serviceAccount = loadServiceAccount();
 
   admin.initializeApp({
     credential: admin.credential.cert(serviceAccount)

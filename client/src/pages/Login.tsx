@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword
@@ -6,6 +7,8 @@ import {
 import { auth } from "../firebase";
 
 export default function Login() {
+  const navigate = useNavigate();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -14,8 +17,10 @@ export default function Login() {
     setError(null);
     try {
       await signInWithEmailAndPassword(auth, email, password);
-    } catch (e) {
-      setError("Login failed");
+      navigate("/overview");
+    } catch (e: any) {
+      console.error(e);
+      setError(e?.code ?? "Login failed");
     }
   }
 
@@ -23,8 +28,10 @@ export default function Login() {
     setError(null);
     try {
       await createUserWithEmailAndPassword(auth, email, password);
-    } catch (e) {
-      setError("Registration failed");
+      navigate("/overview");
+    } catch (e: any) {
+      console.error(e);
+      setError(e?.code ?? "Registration failed");
     }
   }
 
@@ -32,18 +39,8 @@ export default function Login() {
     <div>
       <h1>Login / Register</h1>
 
-      <input
-        placeholder="Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-      />
-
-      <input
-        placeholder="Password"
-        type="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
+      <input placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
+      <input placeholder="Password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
 
       <button onClick={login}>Login</button>
       <button onClick={register}>Register</button>

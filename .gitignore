@@ -22,3 +22,4 @@ coverage/
 
 # Dependencies
 node_modules/
+firebase-service-account.json

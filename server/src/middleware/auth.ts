@@ -41,7 +41,9 @@ export async function requireAuth(req: Request, res: Response, next: NextFunctio
     };
 
     return next();
-  } catch {
+  } catch (err) {
+    console.error("verifyIdToken failed", err);
     return res.status(401).json({ message: "Invalid or expired token" });
   }
+
 }
