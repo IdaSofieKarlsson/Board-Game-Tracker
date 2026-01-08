@@ -26,7 +26,7 @@ statsRouter.get("/overview", requireAuth, async (req, res) => {
 
   const totalPoints = agg.reduce((sum, x) => sum + (x.points ?? 0), 0);
 
-  const favoriteGameId = agg.length > 0 ? agg[0]._id : null;
+  const favoriteGameId = agg.length > 0 ? String(agg[0]._id) : null;
 
   return res.json({
     totalPoints,
