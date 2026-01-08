@@ -2,11 +2,18 @@ import admin from "firebase-admin";
 import fs from "node:fs";
 
 function loadServiceAccount() {
-  const p = process.env.FIREBASE_SERVICE_ACCOUNT_PATH;
-  if (!p) throw new Error("FIREBASE_SERVICE_ACCOUNT_PATH is missing");
+  const json = process.env.FIREBASE_SERVICE_ACCOUNT_JSON;
+  if (json && json.trim()) {
+    return JSON.parse(json);
+  }
 
-  const raw = fs.readFileSync(p, "utf-8");
-  return JSON.parse(raw);
+  const p = process.env.FIREBASE_SERVICE_ACCOUNT_PATH;
+  if (p && p.trim()) {
+    const raw = fs.readFileSync(p, "utf-8");
+    return JSON.parse(raw);
+  }
+
+  throw new Error("Missing FIREBASE_SERVICE_ACCOUNT_JSON (or FIREBASE_SERVICE_ACCOUNT_PATH for local dev)");
 }
 
 export function getFirebaseAdmin() {

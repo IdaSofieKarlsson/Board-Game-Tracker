@@ -7,8 +7,12 @@ async function main() {
   await connectMongo(env.MONGODB_URI);
 
   const app = createApp();
-  app.listen(env.PORT, () => {
-    logger.info("server_started", { port: env.PORT });
+
+  // Vercel provides PORT at runtime; fall back for local dev
+  const port = Number(process.env.PORT) || env.PORT || 3001;
+
+  app.listen(port, () => {
+    logger.info("server_started", { port });
   });
 }
 
