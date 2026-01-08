@@ -11,5 +11,13 @@ export default [
   js.configs.recommended,
 
   // TypeScript linting rules (non-type-aware, simplest + stable)
-  ...tseslint.configs.recommended
+  ...tseslint.configs.recommended,
+
+  // Allow `namespace` in TS (needed for Express Request type augmentation)
+  {
+    files: ["**/*.ts"],
+    rules: {
+      "@typescript-eslint/no-namespace": "off"
+    }
+  }
 ];

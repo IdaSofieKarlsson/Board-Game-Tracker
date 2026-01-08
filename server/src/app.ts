@@ -2,6 +2,9 @@ import express from "express";
 import cors from "cors";
 import { logger } from "./config/logger";
 import { meRouter } from "./routes/me.routes";
+import { gamesRouter } from "./routes/games.routes";
+import { sessionsRouter } from "./routes/sessions.routes";
+import { statsRouter } from "./routes/stats.routes";
 
 export function createApp() {
   const app = express();
@@ -18,6 +21,12 @@ export function createApp() {
   });
 
   app.use("/api/me", meRouter);
+
+  app.use("/api/games", gamesRouter);
+
+  app.use("/api/sessions", sessionsRouter);
+
+  app.use("/api/stats", statsRouter);
 
   return app;
 }
