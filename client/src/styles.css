@@ -1,0 +1,254 @@
+:root {
+  /* Palette (matches your “blue + green” spec) */
+  --bg: #dfeee3;          /* light green page background */
+  --ink: #163a5f;         /* dark blue for text */
+  --border: #163a5f;      /* dark blue borders */
+  --panel: #cfe3f6;       /* light blue boxes/buttons */
+  --panel-2: #e9f3ff;     /* lighter blue for inputs */
+  --white: #ffffff;
+
+  --radius: 12px;
+  --shadow: 0 6px 20px rgba(0,0,0,0.15);
+
+  --content-width: 960px;
+  --gap: 16px;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+/* Links */
+a { color: var(--ink); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* Layout shell */
+.app-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.content-wrap {
+  width: min(var(--content-width), calc(100% - 32px));
+  margin: 0 auto;
+}
+
+.header,
+.footer {
+  background: transparent; /* blends into page */
+  padding: 10px 0;
+}
+
+.header-inner,
+.footer-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gap);
+}
+
+.main {
+  flex: 1;
+  padding: 12px 0 20px;
+}
+
+.main-inner {
+  display: grid;
+  gap: var(--gap);
+}
+
+/* Common “panel/box” look */
+.panel {
+  background: var(--panel);
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px;
+}
+
+.panel-title {
+  margin: 0 0 10px;
+  font-size: 18px;
+}
+
+.h1 {
+  margin: 0 0 8px;
+  font-size: 22px;
+}
+
+.h2 {
+  margin: 0 0 10px;
+  font-size: 18px;
+}
+
+/* Forms */
+.label {
+  font-size: 12px;
+  display: block;
+  margin-bottom: 6px;
+}
+
+.input,
+.select,
+.textarea {
+  width: 100%;
+  padding: 10px 10px;
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  background: var(--panel-2);
+  color: var(--ink);
+  font-family: inherit;
+  font-size: 14px;
+}
+
+.textarea { resize: vertical; min-height: 90px; }
+
+.form-grid {
+  display: grid;
+  gap: 10px;
+}
+
+.form-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+/* Buttons */
+.btn {
+  border: 2px solid var(--border);
+  background: var(--panel);
+  color: var(--ink);
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-family: inherit;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.btn:hover { filter: brightness(0.98); }
+.btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.btn-primary {
+  background: #b7d7ff;
+}
+
+/* Header specifics */
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-title {
+  font-weight: 700;
+}
+
+.avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  object-fit: cover;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+/* Footer */
+.footer {
+  font-size: 12px;
+  padding-bottom: 16px;
+}
+
+/* Pages */
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--gap);
+}
+
+.stats-grid {
+  display: grid;
+  gap: 10px;
+}
+
+.stat-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 10px;
+  background: rgba(255,255,255,0.35);
+  border-radius: 10px;
+}
+
+/* Games list like “cards” */
+.game-list {
+  display: grid;
+  gap: 10px;
+}
+
+.game-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  background: rgba(255,255,255,0.25);
+}
+
+.game-name { font-weight: 700; }
+.game-meta { font-size: 12px; }
+
+/* Modal (page 4 style: centered box, simple form) */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.35);
+  display: grid;
+  place-items: center;
+  padding: 20px;
+}
+
+.modal {
+  width: 520px;
+  max-width: 100%;
+  background: var(--panel);
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 14px;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.modal-title {
+  margin: 0;
+  font-size: 18px;
+}
+
+.modal-subtitle {
+  margin: 0 0 10px;
+  font-size: 13px;
+  opacity: 0.95;
+}

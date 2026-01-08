@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from "react";
 import { getGames, type Game, createGameWithDuplicateHandling } from "../api/games";
 import { createSession, type SessionResult } from "../api/sessions";
 import { Modal } from "../components/Modal";
-import { Link } from "react-router-dom";
 
 export default function Games() {
   const [games, setGames] = useState<Game[]>([]);
@@ -29,14 +28,16 @@ export default function Games() {
     [games, selectedGameId]
   );
 
+  const today = useMemo(() => new Date().toISOString().slice(0, 10), []);
+
   async function load() {
     setError(null);
     setLoading(true);
     try {
       const list = await getGames();
       setGames(list);
-    } catch (e) {
-      setError("Failed to load games.");
+    } catch (e: any) {
+      setError(e?.message ?? "Kunde inte ladda spel.");
     } finally {
       setLoading(false);
     }
@@ -49,12 +50,9 @@ export default function Games() {
   function openSessionForGameId(gameId: string) {
     setSelectedGameId(gameId);
     setResult("WIN");
-
-    const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
     setPlayedDate(today);
-
     setSessionOpen(true);
-    }
+  }
 
   async function submitAddGame() {
     setError(null);
@@ -63,20 +61,18 @@ export default function Games() {
       if (!trimmed) return;
 
       const res = await createGameWithDuplicateHandling({ name: trimmed, category: newCategory });
-        
-      // Ask "Do you mean this game?"
+
       if (res.kind === "duplicate") {
         setDupGame(res.game);
         setDupConfirmOpen(true);
         return;
-        }
+      }
 
-      // Created successfully
       setAddOpen(false);
       setNewName("");
       await load();
-    } catch (e) {
-      setError("Failed to add game.");
+    } catch (e: any) {
+      setError(e?.message ?? "Kunde inte lägga till spel.");
     }
   }
 
@@ -86,22 +82,27 @@ export default function Games() {
     setAddOpen(false);
     setNewName("");
 
-    // Open session modal for existing game
     openSessionForGameId(dupGame.id);
     setDupGame(null);
   }
 
   function confirmDuplicateNo() {
-    // Keep add modal open; user can change the name
     setDupConfirmOpen(false);
     setDupGame(null);
   }
 
   async function submitSession() {
-    const playedAtIso = new Date(`${playedDate}T12:00:00`).toISOString();
     setError(null);
     try {
       if (!selectedGameId) return;
+
+      // prevent future dates (client UX)
+      if (playedDate > today) {
+        setError("Datum kan inte vara i framtiden.");
+        return;
+      }
+
+      const playedAtIso = new Date(`${playedDate}T12:00:00`).toISOString();
 
       await createSession({
         gameId: selectedGameId,
@@ -111,93 +112,147 @@ export default function Games() {
 
       setSessionOpen(false);
       setSelectedGameId(null);
-    } catch (e) {
-      setError("Failed to register session.");
+    } catch (e: any) {
+      setError(e?.message ?? "Kunde inte registrera spelomgång.");
     }
   }
 
-  if (loading) return <p>Loading games...</p>;
+  if (loading) return <p>Laddar…</p>;
 
   return (
-    <div style={{ padding: 16 }}>
-      <h1>Games</h1>
-      {error && <p>{error}</p>}
+    <div className="main-inner">
+      <h1 className="h1">Spel</h1>
 
-      <button onClick={() => setAddOpen(true)}>Add Game</button>
+      {error && (
+        <div className="panel" style={{ background: "rgba(255,255,255,0.45)" }}>
+          <strong>Fel:</strong> {error}
+        </div>
+      )}
 
-      <ul>
-        {games.map((g) => (
-          <li key={g._id} style={{ marginTop: 8 }}>
-            <button onClick={() => openSessionForGameId(g._id)}>
-              {g.name} ({g.category})
-            </button>
-          </li>
-        ))}
-      </ul>
+      {/* Games list */}
+      <section className="panel">
+        <h2 className="panel-title">Välj ett spel för att registrera en spelomgång</h2>
+
+        <div className="game-list">
+          {games.map((g) => (
+            <div key={g._id} className="game-card">
+              <div>
+                <div className="game-name">{g.name}</div>
+                <div className="game-meta">{g.category}</div>
+              </div>
+
+              <button className="btn btn-primary" onClick={() => openSessionForGameId(g._id)}>
+                Registrera spelomgång
+              </button>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Add game prompt */}
+      <section className="panel">
+        <h2 className="panel-title">Saknas ditt favoritspel?</h2>
+        <p style={{ marginTop: 0 }}>Lägg till det här!</p>
+        <button className="btn" onClick={() => setAddOpen(true)}>
+          Lägg till nytt spel
+        </button>
+      </section>
 
       {/* Add Game Modal */}
-      <Modal title="Add game" open={addOpen} onClose={() => setAddOpen(false)}>
-        <div style={{ display: "grid", gap: 8 }}>
+      <Modal title="Lägg till nytt spel" open={addOpen} onClose={() => setAddOpen(false)}>
+        <p className="modal-subtitle">Fyll i namn och kategori och spara.</p>
+
+        <div className="form-grid">
           <label>
-            Name
-            <input value={newName} onChange={(e) => setNewName(e.target.value)} />
+            <span className="label">Spelnamn</span>
+            <input className="input" value={newName} onChange={(e) => setNewName(e.target.value)} />
           </label>
 
           <label>
-            Category
-            <select value={newCategory} onChange={(e) => setNewCategory(e.target.value as Game["category"])}>
+            <span className="label">Kategori</span>
+            <select
+              className="select"
+              value={newCategory}
+              onChange={(e) => setNewCategory(e.target.value as Game["category"])}
+            >
               <option value="BRADSPEL">Brädspel</option>
               <option value="KORTSPEL">Kortspel</option>
               <option value="ANNAT">Annat</option>
             </select>
           </label>
 
-          <button onClick={submitAddGame}>Save</button>
+          <div className="form-actions">
+            <button className="btn" onClick={() => setAddOpen(false)}>
+              Avbryt
+            </button>
+            <button className="btn btn-primary" onClick={submitAddGame}>
+              Spara
+            </button>
+          </div>
         </div>
       </Modal>
 
       {/* Duplicate confirmation modal */}
-      <Modal title="Do you mean this game?" open={dupConfirmOpen} onClose={confirmDuplicateNo}>
+      <Modal title="Menade du detta spel?" open={dupConfirmOpen} onClose={confirmDuplicateNo}>
         {dupGame ? (
-          <div style={{ display: "grid", gap: 12 }}>
-            <p>
-              Existing game found: <strong>{dupGame.name}</strong> ({dupGame.category})
+          <div className="form-grid">
+            <p className="modal-subtitle">
+              Ett spel med samma namn finns redan: <strong>{dupGame.name}</strong> ({dupGame.category})
             </p>
-            <div style={{ display: "flex", gap: 8 }}>
-              <button onClick={confirmDuplicateYes}>Yes</button>
-              <button onClick={confirmDuplicateNo}>No</button>
+
+            <div className="form-actions">
+              <button className="btn" onClick={confirmDuplicateNo}>
+                Nej
+              </button>
+              <button className="btn btn-primary" onClick={confirmDuplicateYes}>
+                Ja
+              </button>
             </div>
           </div>
         ) : (
-          <p>No match.</p>
+          <p>Inget att visa.</p>
         )}
       </Modal>
 
       {/* Register session modal */}
       <Modal
-        title={selectedGame ? `Register session: ${selectedGame.name}` : "Register session"}
+        title={selectedGame ? `Registrera spelomgång: ${selectedGame.name}` : "Registrera spelomgång"}
         open={sessionOpen}
         onClose={() => setSessionOpen(false)}
       >
-        <div style={{ display: "grid", gap: 8 }}>
+        <p className="modal-subtitle">
+          Välj resultat och datum. Datum kan inte vara i framtiden.
+        </p>
+
+        <div className="form-grid">
           <label>
-            Result
-            <select value={result} onChange={(e) => setResult(e.target.value as SessionResult)}>
-              <option value="WIN">Win (2p)</option>
-              <option value="TIE">Tie (1p)</option>
-              <option value="LOSS">Loss (0p)</option>
+            <span className="label">Resultat</span>
+            <select className="select" value={result} onChange={(e) => setResult(e.target.value as SessionResult)}>
+              <option value="WIN">Vinst (2p)</option>
+              <option value="TIE">Oavgjort (1p)</option>
+              <option value="LOSS">Förlust (0p)</option>
             </select>
           </label>
+
           <label>
-            Date (YYYY-MM-DD)
+            <span className="label">Datum</span>
             <input
-                type="date"
-                value={playedDate}
-                max={new Date().toISOString().slice(0, 10)} // prevents future
-                onChange={(e) => setPlayedDate(e.target.value)}
+              className="input"
+              type="date"
+              value={playedDate}
+              max={today}
+              onChange={(e) => setPlayedDate(e.target.value)}
             />
-            </label>
-          <button onClick={submitSession}>Save session</button>
+          </label>
+
+          <div className="form-actions">
+            <button className="btn" onClick={() => setSessionOpen(false)}>
+              Avbryt
+            </button>
+            <button className="btn btn-primary" onClick={submitSession}>
+              Spara spelomgång
+            </button>
+          </div>
         </div>
       </Modal>
     </div>

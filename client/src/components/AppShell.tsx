@@ -3,16 +3,24 @@ import { Footer } from "./Footer";
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        display: "flex",
-        flexDirection: "column"
-      }}
-    >
-      <Header />
-      <main style={{ flex: 1, padding: 16 }}>{children}</main>
-      <Footer />
+    <div className="app-shell">
+      <div className="header">
+        <div className="content-wrap">
+          <Header />
+        </div>
+      </div>
+
+      <div className="main">
+        <div className="content-wrap">
+          <div className="main-inner">{children}</div>
+        </div>
+      </div>
+
+      <div className="footer">
+        <div className="content-wrap">
+          <Footer />
+        </div>
+      </div>
     </div>
   );
 }

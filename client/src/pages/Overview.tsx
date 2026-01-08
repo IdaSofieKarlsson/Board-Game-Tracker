@@ -1,16 +1,12 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { getMe, patchMe, type Me } from "../api/me";
 import { getOverviewStats, type OverviewStats } from "../api/stats";
-import { signOut } from "firebase/auth";
-import { auth } from "../firebase";
-import { useNavigate } from "react-router-dom";
-import { Link } from "react-router-dom";
 import { getGames, type Game } from "../api/games";
-
 
 export default function Overview() {
   const [me, setMe] = useState<Me | null>(null);
   const [stats, setStats] = useState<OverviewStats | null>(null);
+  const [games, setGames] = useState<Game[]>([]);
 
   const [username, setUsername] = useState("");
   const [funFact, setFunFact] = useState("");
@@ -18,21 +14,17 @@ export default function Overview() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [games, setGames] = useState<Game[]>([]);
-
-  const navigate = useNavigate();
-
-  async function logout() {
-    await signOut(auth);
-    navigate("/");
-  }
-
 
   async function load() {
     setError(null);
     setLoading(true);
     try {
-      const [meData, statsData, gamesData] = await Promise.all([getMe(), getOverviewStats(), getGames()]);
+      const [meData, statsData, gamesData] = await Promise.all([
+        getMe(),
+        getOverviewStats(),
+        getGames()
+      ]);
+
       setMe(meData);
       setStats(statsData);
       setGames(gamesData);
@@ -40,9 +32,8 @@ export default function Overview() {
       setUsername(meData.username ?? "");
       setFunFact(meData.funFact ?? "");
     } catch (e: any) {
-        console.error(e);
-        setError(e?.message ?? "Failed to load overview data.");
-        } finally {
+      setError(e?.message ?? "Kunde inte ladda översikt.");
+    } finally {
       setLoading(false);
     }
   }
@@ -50,6 +41,16 @@ export default function Overview() {
   useEffect(() => {
     load();
   }, []);
+
+  const displayName = useMemo(() => {
+    if (!me) return "";
+    return me.username?.trim() ? me.username : me.email;
+  }, [me]);
+
+  const favoriteGameName = useMemo(() => {
+    if (!stats?.favoriteGameId) return "Inget ännu";
+    return games.find((g) => g._id === stats.favoriteGameId)?.name ?? "Okänt spel";
+  }, [stats, games]);
 
   async function saveProfile() {
     setError(null);
@@ -60,64 +61,83 @@ export default function Overview() {
         funFact: funFact.trim() ? funFact.trim() : undefined
       });
       setMe(updated);
-    } catch (e) {
-      setError("Failed to save profile.");
+    } catch (e: any) {
+      setError(e?.message ?? "Kunde inte spara profil.");
     } finally {
       setSaving(false);
     }
   }
 
-  if (loading) return <p>Loading overview...</p>;
+  if (loading) return <p>Laddar…</p>;
   if (error) return <p>{error}</p>;
-  if (!me || !stats) return <p>Missing data.</p>;
-
-  const displayName = me.username?.trim() ? me.username : me.email;
-
-  const favoriteGameName =
-    stats.favoriteGameId
-      ? games.find((g) => g._id === stats.favoriteGameId)?.name ?? "Unknown"
-      : "None yet";
+  if (!me || !stats) return <p>Data saknas.</p>;
 
   return (
-    <div style={{ padding: 16 }}>
-      <h1>Overview</h1>
-      <section style={{ marginBottom: 16 }}>
-        <h2>User</h2>
-        <p>
-          Signed in as: <strong>{displayName}</strong>
-        </p>
+    <div className="main-inner">
+      <h1 className="h1">Översikt</h1>
 
-        <div style={{ display: "grid", gap: 8, maxWidth: 420 }}>
-          <label>
-            Username
-            <input
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              placeholder="Optional username"
-            />
-          </label>
+      <div className="two-col">
+        {/* Profile */}
+        <section className="panel">
+          <h2 className="panel-title">Din profil</h2>
 
-          <label>
-            Fun fact
-            <textarea
-              value={funFact}
-              onChange={(e) => setFunFact(e.target.value)}
-              placeholder="Optional fun fact"
-              rows={4}
-            />
-          </label>
+          <div className="stats-grid" style={{ marginBottom: 10 }}>
+            <div className="stat-row">
+              <span>Inloggad som</span>
+              <strong>{displayName}</strong>
+            </div>
+          </div>
 
-          <button onClick={saveProfile} disabled={saving}>
-            {saving ? "Saving..." : "Save"}
-          </button>
-        </div>
-      </section>
+          <div className="form-grid">
+            <label>
+              <span className="label">Användarnamn</span>
+              <input
+                className="input"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                placeholder="Valfritt (annars används e-post)"
+              />
+            </label>
 
-      <section>
-        <h2>Stats</h2>
-        <p>Total points: <strong>{stats.totalPoints}</strong></p>
-        <p>Favorite game: <strong>{favoriteGameName}</strong></p>
-      </section>
+            <label>
+              <span className="label">Fun fact</span>
+              <textarea
+                className="textarea"
+                value={funFact}
+                onChange={(e) => setFunFact(e.target.value)}
+                placeholder="Skriv något kul (max 500 tecken)"
+              />
+            </label>
+
+            <div className="form-actions">
+              <button className="btn btn-primary" onClick={saveProfile} disabled={saving}>
+                {saving ? "Sparar…" : "Spara"}
+              </button>
+            </div>
+          </div>
+        </section>
+
+        {/* Stats */}
+        <section className="panel">
+          <h2 className="panel-title">Statistik</h2>
+
+          <div className="stats-grid">
+            <div className="stat-row">
+              <span>Favoritspel</span>
+              <strong>{favoriteGameName}</strong>
+            </div>
+
+            <div className="stat-row">
+              <span>Totala poäng</span>
+              <strong>{stats.totalPoints}</strong>
+            </div>
+          </div>
+
+          <p style={{ marginTop: 12, fontSize: 12, opacity: 0.95 }}>
+            Poäng: vinst = 2, oavgjort = 1, förlust = 0.
+          </p>
+        </section>
+      </div>
     </div>
   );
 }

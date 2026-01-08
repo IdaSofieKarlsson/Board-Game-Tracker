@@ -12,34 +12,18 @@ export function Header() {
   }
 
   return (
-    <header
-      style={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        padding: "8px 16px",
-        borderBottom: "1px solid #ccc"
-      }}
-    >
-      <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-        <img
-          src={KnappenAvatar}
-          alt="Knappen"
-          style={{
-            width: 40,
-            height: 40,
-            borderRadius: "50%",
-            objectFit: "cover"
-          }}
-        />
-        <strong>Knappen’s Board Game Tracker</strong>
-      </div>
+    <header className="header-inner">
+        <div className="brand">
+            <img className="avatar" src={KnappenAvatar} alt="Knappen" />
+            <div className="brand-title">Knappens Brädspels-Portal</div>
+        </div>
 
-      <nav style={{ display: "flex", gap: 16, alignItems: "center" }}>
-        <Link to="/overview">Overview</Link>
-        <Link to="/games">Games</Link>
-        <button onClick={logout}>Logout</button>
-      </nav>
+        <nav className="nav">
+            <Link to="/overview">Översikt</Link>
+            <Link to="/games">Spel</Link>
+            <button className="btn" onClick={logout}>Logga ut</button>
+        </nav>
     </header>
+
   );
 }
