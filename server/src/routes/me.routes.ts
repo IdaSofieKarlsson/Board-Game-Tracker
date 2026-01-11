@@ -1,7 +1,6 @@
 import { Router } from "express";
 import { requireAuth } from "../middleware/auth";
 import { ensureUser } from "../services/user.service";
-//import { UserModel } from "../models/User";
 import { updateMeSchema } from "../schemas/me.schemas";
 
 export const meRouter = Router();

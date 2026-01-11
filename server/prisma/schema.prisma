@@ -4,6 +4,8 @@
 // Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
+/*
+The code below is not used. Prisma did not work out with MongoDB, so I had to go with only using Mongoose
 generator client {
   provider = "prisma-client-js"
 }
@@ -62,3 +64,4 @@ model Session {
   @@index([gameId])
   @@index([userId, gameId])
 }
+*/

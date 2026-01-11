@@ -1,4 +1,5 @@
-import { Schema, model, type InferSchemaType, Types } from "mongoose";
+//"Types" removed from import below, as declared but never read
+import { Schema, model, type InferSchemaType } from "mongoose";
 
 export const SessionResult = ["WIN", "TIE", "LOSS"] as const;
 

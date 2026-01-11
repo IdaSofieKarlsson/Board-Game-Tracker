@@ -54,7 +54,7 @@ export default function Login() {
               width: 320,
               height: 320,
               borderRadius: 18,
-              border: "2px solid var(--border)",
+              
               objectFit: "cover"
             }}
           />

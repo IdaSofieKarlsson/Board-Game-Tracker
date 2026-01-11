@@ -6,13 +6,6 @@ export type AuthUser = {
   email: string | null;
 };
 
-//Short answer - Ignore it. Completely.
-/*Why this is safe
-This is a TypeScript lint/style warning, not a runtime error
-The code is correct and standard for extending Express Request
-It does not affect runtime behavior
-It will not break CI, tests, or the server*/
-
 declare global {
   namespace Express {
     interface Request {
@@ -45,5 +38,4 @@ export async function requireAuth(req: Request, res: Response, next: NextFunctio
     console.error("verifyIdToken failed", err);
     return res.status(401).json({ message: "Invalid or expired token" });
   }
-
 }
