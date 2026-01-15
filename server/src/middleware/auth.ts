@@ -1,5 +1,6 @@
 import type { Request, Response, NextFunction } from "express";
 import { getFirebaseAdmin } from "../auth/firebaseAdmin";
+import { logger } from "../config/logger";
 
 export type AuthUser = {
   firebaseUid: string;
@@ -19,6 +20,7 @@ export async function requireAuth(req: Request, res: Response, next: NextFunctio
   const match = header.match(/^Bearer\s+(.+)$/i);
 
   if (!match) {
+    logger.error("Missing Authorization Bearer token");
     return res.status(401).json({ message: "Missing Authorization Bearer token" });
   }
 
@@ -36,6 +38,7 @@ export async function requireAuth(req: Request, res: Response, next: NextFunctio
     return next();
   } catch (err) {
     console.error("verifyIdToken failed", err);
+    logger.error("Invalid or expired token");
     return res.status(401).json({ message: "Invalid or expired token" });
   }
 }

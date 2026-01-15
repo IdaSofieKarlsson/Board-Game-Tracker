@@ -2,6 +2,7 @@ import { Router } from "express";
 import { requireAuth } from "../middleware/auth";
 import { ensureUser } from "../services/user.service";
 import { updateMeSchema } from "../schemas/me.schemas";
+import { logger } from "../config/logger";
 
 export const meRouter = Router();
 
@@ -32,7 +33,7 @@ meRouter.patch("/", requireAuth, async (req, res) => {
   if (parsed.data.funFact !== undefined) {
     user.funFact = parsed.data.funFact;
   }
-
+  logger.info("User changed their data.");
   await user.save();
 
   return res.json({

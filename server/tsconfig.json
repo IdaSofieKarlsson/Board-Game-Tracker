@@ -9,6 +9,6 @@
     "strict": true,
     "skipLibCheck": true
   },
-  "include": ["**/*.ts"],
+  "include": ["**/*.ts", "src/config/logger.ts"],
   "exclude": ["node_modules", "dist"]
 }

@@ -3,6 +3,7 @@ import { requireAuth } from "../middleware/auth";
 import { GameModel } from "../models/Game";
 import { createGameSchema } from "../schemas/games.schemas";
 import { normalizeGameName } from "../utils/normalize";
+import { logger } from "../config/logger";
 
 export const gamesRouter = Router();
 
@@ -13,8 +14,10 @@ gamesRouter.get("/", requireAuth, async (_req, res) => {
 
 gamesRouter.post("/", requireAuth, async (req, res) => {
   const parsed = createGameSchema.safeParse(req.body);
+  logger.info("Posted a new game.");
 
   if (!parsed.success) {
+    logger.error("invalid data when posting a new game.");
     return res.status(400).json({ message: "Invalid payload" });
   }
 

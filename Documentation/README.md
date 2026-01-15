@@ -19,7 +19,7 @@ Though it starts of as group project 4, the intent is to continue develop the pr
 with more features and expanded authentication. 
 
 ## tech stack
-This is based on the classical MERN stack: MongoDB, Express, React and Node. 
+This is based on the classical MERN stack: MongoDB, Express, React and Node.js. 
 
 ### Authentication
 Firebase is used for authentication. Right now, the authentication is only one level: users. 
@@ -32,29 +32,31 @@ ERD, made with drawio and saved as a png file, can be found in /documentation/
 ### Client 
 Framework is Vite - React with TypeScript
 ESLint
+TypeScript
 
 ### Server
 TypeScript
-Winston
 No Prisma - it didn’t work with Prisma, massive errors, so I compromised and went with only Mongoose. 
 NoSQL database - MongoDB
 ZOD - used in server/src/schemas/
 ESLint
 
-## Testing and Github actions
+### Logging using Winston
+The file for configuring Winston is found under server/src/config/logger.ts
+The error and combined (all messages) logs are found under server/logs/combined.log and server/logs/error.log
+
+### Testing and Github actions
 Jest is used for testing. 
 Test files can be found in /server/__tests__
-
 GitHub Actions runs when pushing to main branch. 
 
-## Deployment, Vercel
-
-Feel free to register many fake users, ideally @example.com, and input much fake data, 
+### Deployment, Vercel
+Feel free to register many fake users, ideally use @example.com, and input much fake data, 
 but please only POST real games. 
 
 ## Releases and features 
 ### 1.0 Very First Deployment
-This is the absolut minimum required project, it's only main gole to pass my group project 4. 
+This is the absolut minimum required project, it's only main goal is to pass my group project 4. 
 
 ### 2.0
 Well, stay tuned for that... 

@@ -6,6 +6,7 @@ import { createSessionSchema } from "../schemas/sessions.schemas";
 import { SessionModel } from "../models/Session";
 import { GameModel } from "../models/Game";
 import { pointsFromResult } from "../services/points.service";
+import { logger } from "../config/logger";
 
 export const sessionsRouter = Router();
 
@@ -48,6 +49,6 @@ sessionsRouter.post("/", requireAuth, async (req, res) => {
     points,
     playedAt: playedAtDate
   });
-
+  logger.info("A session was registered.");
   return res.status(201).json(created);
 });

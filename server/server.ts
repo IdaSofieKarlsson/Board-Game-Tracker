@@ -10,9 +10,9 @@ async function main() {
 
   // Vercel provides PORT at runtime; fall back for local dev
   const port = Number(process.env.PORT) || env.PORT || 3001;
-
+  
   app.listen(port, () => {
-    logger.info("server_started", { port });
+    logger.info(`Server is running on port ${port}`);
   });
 }
 

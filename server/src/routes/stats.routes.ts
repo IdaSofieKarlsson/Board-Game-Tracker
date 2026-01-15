@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import { requireAuth } from "../middleware/auth";
 import { ensureUser } from "../services/user.service";
 import { SessionModel } from "../models/Session";
+import { logger } from "../config/logger";
 
 export const statsRouter = Router();
 
@@ -27,7 +28,9 @@ statsRouter.get("/overview", requireAuth, async (req, res) => {
   const totalPoints = agg.reduce((sum, x) => sum + (x.points ?? 0), 0);
 
   const favoriteGameId = agg.length > 0 ? String(agg[0]._id) : null;
-
+  
+  logger.info("User statistics is updated.");
+  
   return res.json({
     totalPoints,
     favoriteGameId
