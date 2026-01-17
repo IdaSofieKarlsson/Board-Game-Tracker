@@ -30,8 +30,16 @@ export function createApp() {
     })
   );
 
-  app.options("*", cors());
-  
+  app.options(/.*/, cors({
+    origin: (origin, cb) => {
+      if (!origin) return cb(null, true);
+      if (allowedOrigins.has(origin)) return cb(null, true);
+      return cb(new Error(`CORS blocked for origin: ${origin}`));
+    },
+    methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"]
+  }));
+
   app.use(express.json());
 
   //app.get("/health", (_req, res) => res.json({ ok: true }));
