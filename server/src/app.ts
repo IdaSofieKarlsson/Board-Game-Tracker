@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import mongoose from "mongoose";
 import { logger } from "./config/logger";
 import { meRouter } from "./routes/me.routes";
 import { gamesRouter } from "./routes/games.routes";
@@ -23,7 +24,13 @@ export function createApp() {
   );
   app.use(express.json());
 
-  app.get("/health", (_req, res) => res.json({ ok: true }));
+  //app.get("/health", (_req, res) => res.json({ ok: true }));
+  app.get("/health", (_req, res) => {
+  res.json({
+    ok: true,
+    mongoReadyState: mongoose.connection.readyState, // 0=disconnected, 1=connected, 2=connecting, 3=disconnecting
+  });
+});
 
   // Simple request logging
   app.use((req, _res, next) => {
