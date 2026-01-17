@@ -11,17 +11,27 @@ import { errorHandler } from "./middleware/errorHandler";
 export function createApp() {
   const app = express();
 
-  const allowedOrigins = [
+  const allowedOrigins = new Set(
+    [
       "http://localhost:5173",
-      process.env.CLIENT_ORIGIN // set this in Vercel for server
-    ].filter(Boolean) as string[];
+      process.env.CLIENT_ORIGIN
+    ].filter(Boolean)
+  );
 
   app.use(
     cors({
-      origin: allowedOrigins,
-      credentials: false
+      origin: (origin, cb) => {
+        if (!origin) return cb(null, true); // Insomnia / server-to-server
+        if (allowedOrigins.has(origin)) return cb(null, true);
+        return cb(new Error(`CORS blocked for origin: ${origin}`));
+      },
+      methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
+      allowedHeaders: ["Content-Type", "Authorization"]
     })
   );
+
+  app.options("*", cors());
+  
   app.use(express.json());
 
   //app.get("/health", (_req, res) => res.json({ ok: true }));
