@@ -61,7 +61,7 @@ export default function Login() {
           <div style={{ textAlign: "center" }}>
             <div className="h1" style={{ margin: 0 }}>Knappens Brädspels-Portal</div>
             <p style={{ margin: "6px 0 0" }}>
-              Registrera spelomgångar och följ din statistik.
+              Registrera vad du spelat och följ din statistik
             </p>
           </div>
         </div>
@@ -78,7 +78,7 @@ export default function Login() {
         <div className="two-col">
           {/* Login */}
           <section>
-            <h2 className="panel-title">Logga in</h2>
+            <h2 className="panel-title">Logga in på ditt konto här</h2>
             <div className="form-grid">
               <label>
                 <span className="label">E-post</span>
@@ -86,7 +86,7 @@ export default function Login() {
                   className="input"
                   value={loginEmail}
                   onChange={(e) => setLoginEmail(e.target.value)}
-                  placeholder="namn@example.com"
+                  placeholder="din epost-adress"
                   autoComplete="email"
                 />
               </label>
@@ -113,7 +113,7 @@ export default function Login() {
 
           {/* Register */}
           <section>
-            <h2 className="panel-title">Registrera</h2>
+            <h2 className="panel-title">Registrera ditt konto här</h2>
             <div className="form-grid">
               <label>
                 <span className="label">E-post</span>
@@ -121,7 +121,7 @@ export default function Login() {
                   className="input"
                   value={registerEmail}
                   onChange={(e) => setRegisterEmail(e.target.value)}
-                  placeholder="namn@example.com"
+                  placeholder="din epost-adress"
                   autoComplete="email"
                 />
               </label>
@@ -139,7 +139,7 @@ export default function Login() {
               </label>
 
               <div className="form-actions">
-                <button className="btn" onClick={register} disabled={busy}>
+                <button className="btn btn-primary" onClick={register} disabled={busy}>
                   {busy ? "Vänta…" : "Registrera"}
                 </button>
               </div>

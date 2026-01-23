@@ -129,9 +129,18 @@ export default function Games() {
         </div>
       )}
 
+      {/* Add game prompt */}
+      <section className="panel">
+        <h2 className="panel-title">Saknas ditt favoritspel?</h2>
+        <p style={{ marginTop: 0 }}>Lägg till det här!</p>
+        <button className="btn" onClick={() => setAddOpen(true)}>
+          Lägg till nytt spel
+        </button>
+      </section>
+
       {/* Games list */}
       <section className="panel">
-        <h2 className="panel-title">Välj ett spel för att registrera en spelomgång</h2>
+        <h2 className="panel-title">Välj ett spel för att registrera ditt resultat</h2>
 
         <div className="game-list">
           {games.map((g) => (
@@ -147,15 +156,6 @@ export default function Games() {
             </div>
           ))}
         </div>
-      </section>
-
-      {/* Add game prompt */}
-      <section className="panel">
-        <h2 className="panel-title">Saknas ditt favoritspel?</h2>
-        <p style={{ marginTop: 0 }}>Lägg till det här!</p>
-        <button className="btn" onClick={() => setAddOpen(true)}>
-          Lägg till nytt spel
-        </button>
       </section>
 
       {/* Add Game Modal */}

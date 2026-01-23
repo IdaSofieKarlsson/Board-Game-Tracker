@@ -90,7 +90,7 @@ export default function Overview() {
 
           <div className="form-grid">
             <label>
-              <span className="label">Användarnamn</span>
+              <span className="label">Välj nytt användarnamn</span>
               <input
                 className="input"
                 value={username}
@@ -100,7 +100,7 @@ export default function Overview() {
             </label>
 
             <label>
-              <span className="label">Fun fact</span>
+              <span className="label">Skriv något om dig!</span>
               <textarea
                 className="textarea"
                 value={funFact}
@@ -123,12 +123,12 @@ export default function Overview() {
 
           <div className="stats-grid">
             <div className="stat-row">
-              <span>Favoritspel</span>
+              <span>Du spelar oftast: </span>
               <strong>{favoriteGameName}</strong>
             </div>
 
             <div className="stat-row">
-              <span>Totala poäng</span>
+              <span>Total poäng</span>
               <strong>{stats.totalPoints}</strong>
             </div>
           </div>
